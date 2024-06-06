@@ -1,16 +1,21 @@
-const { response } = require("express");
+const express = require ("express")
 
-const express = requiere("express");
+const kodersRouter = require ("./routes/Koders.router")
+const authRouter = require("./routes/auth.router")
+const genRouter = require ("./routes/generation.router")
 
 const app = express();
 
 //middleware
 app.use(express.json());
+app.use("/koders", kodersRouter)
+app.use("/auth", authRouter)
+app.use("/generations", genRouter)
 
-app.get('/',(request, response) =>{
-    response.json({
-        message : "Koders APIv1",
+app.get("/", (req,res) => {
+    res.json({
+        message: "Koders APIv1"
     })
 })
 
-module.exports = app;
+module.exports = app
