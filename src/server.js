@@ -5,7 +5,7 @@ const app = express()
 
 const authRouter = require('./routes/auth.router')
 const kodersRouter = require('./routes/koders.router')
-const generationsRouter = require('./routes/generations.router')
+const generationsRouter = require('./routes/generation.router')
 
 app.use(cors())
 app.use(express.json()) // Middleware

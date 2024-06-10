@@ -1,5 +1,5 @@
 const createError = require('http-errors')
-const Generations = require('../models/generations.model')
+const Generations = require('../models/generacions.model')
 
 async function index() {
    const generations = await Generations.find()

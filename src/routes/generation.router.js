@@ -1,5 +1,5 @@
 const express = require('express')
-const generationCase = require('../usecases/generation.usecase')
+const generationCase = require('../usecases/generation.usecases')
 const auth = require('../middleware/auth.middleware')
 
 const router = express.Router();
