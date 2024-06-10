@@ -1,21 +1,24 @@
-const express = require ("express")
+const cors = require('cors')
+const express = require('express')
 
-const kodersRouter = require ("./routes/Koders.router")
-const authRouter = require("./routes/auth.router")
-const genRouter = require ("./routes/generation.router")
+const app = express()
 
-const app = express();
+const authRouter = require('./routes/auth.router')
+const kodersRouter = require('./routes/koders.router')
+const generationsRouter = require('./routes/generations.router')
 
-//middleware
-app.use(express.json());
-app.use("/koders", kodersRouter)
-app.use("/auth", authRouter)
-app.use("/generations", genRouter)
+app.use(cors())
+app.use(express.json()) // Middleware
 
-app.get("/", (req,res) => {
-    res.json({
-        message: "Koders APIv1"
-    })
+// Rutas
+app.use('/auth', authRouter)
+app.use('/koders', kodersRouter)
+app.use('/generations', generationsRouter)
+
+app.get('/', (request, response) => {
+   response.json({
+      message: 'Koders APIv1'
+   })
 })
 
 module.exports = app

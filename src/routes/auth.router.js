@@ -1,28 +1,27 @@
-const express = require("express")
-const router = express.Router()
-const authUseCase = require ("../usecases/auth.usecase")
+const express = require('express')
+const authCase = require('../usecases/auth.usecase')
 
+const router = express.Router();
 
-//POST  /auth/login
-
-router.post("/login", async (req,res) => {
-    try {
-        const { email, password } = req.body;
-        const token = await authUseCase.login(email, password)
-
-        res.json ({
-            succes: true,
-            data: { token}
-        })
-
-    } catch (error) {
-        res.status(error.status || 500);
-        res.json ({
-            succces: false,
-            error:error.message,
-        })
-    }
-
+// Login
+router.post('/login', async (request, response) => {
+   try {
+      const { email, password } = request.body
+   
+      const token = await authCase.login(email, password)
+   
+      response.json({
+         status: true,
+         data: {
+            token
+         }
+      })
+   } catch (error) {
+      response.status(error.status || 500)
+      response.json({
+         error: error.message
+      })
+   }
 })
 
 module.exports = router

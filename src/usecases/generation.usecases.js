@@ -1,37 +1,23 @@
-const createError = require("http-errors")
-const gen = require("../models/generation.model");
-const generationModel = require("../models/generation.model");
+const createError = require('http-errors')
+const Generations = require('../models/generations.model')
 
-async function create(genData) {
-    const newGen = await gen.create(genData);
-    return newGen
+async function index() {
+   const generations = await Generations.find()
+
+   return generations
 }
 
-async function getAll() {
-    const allGen = await gen.find()
-    return allGen
-}
+async function store(data) {
+   const generationFound = await Generations.findOne({ number: data.number })
 
-async function getById(id) {
-    const generation = await gen.findById(id);
-    return generation;
-}
+   if (generationFound)
+      throw createError(400, "Generation already in use")
 
-async function deleteById(id){
-    const genDelate = await gen.findByIdAndDelete(id)
-    return genDelate
-}
-
-async function updateById (id, newKoderData){
-    const updatedGen = await gen.findByIdAndUpdate(id, newKoderData, 
-        {new: true});
-    return updatedGen
+   const koder = await Generations.create(data)
+   return koder
 }
 
 module.exports = {
-    create,
-    getAll,
-    getById,
-    deleteById,
-    updateById,
+   index,
+   store
 }

@@ -1,25 +1,27 @@
-const createError = require("http-errors")
-const Koders = require ("../models/koders.model")
-const jwt = require ("../lib/jwt")
-const encrypt = require("../lib/encrypt")
+const createError = require('http-errors')
+const Koders = require('../models/koders.model')
+const jwt = require('../lib/jwt')
+const encrypt = require('../lib/encrypt')
 
-async function login (email, password) {
-    const koder =  await Koders.findOne({ email: email})
+async function login(email, password) {
+   const koder = await Koders.findOne({ email: email })
+   if (!koder)
+      throw createError(401, 'Invalid data')
 
-    if(!koder) {
-        throw createError(401, "Invalid data")
-    }
+   const isValid = await encrypt.compare(password, koder.password)
+   if (!isValid) {
+      throw createError(401, 'Invalid data')
+   }
 
-    const isPasswordValid = await encrypt.compare(password, koder.password);
+   const token = jwt.sign({ id: koder._id })
 
-    if (!isPasswordValid) {
-        throw createError(401, "Invalid data")
-    }
+   return token
+}
 
-    const token = jwt.sign({ id: koder._id })
-    return token
+function logout(params) {
+   
 }
 
 module.exports = {
-    login,
+   login, logout
 }

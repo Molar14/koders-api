@@ -1,30 +1,27 @@
-const createError = require("http-errors")
-const koderUseCase = require ("../usecases/koders.usecase")
-const jwt = require("../lib/jwt")
+const createHttpError = require("http-errors")
+const jwt = require('../lib/jwt')
+const koderUseCase = require('../usecases/koders.usecase')
 
-async function auth(req, res, next ) {
-    try {
-      const authorization = req.headers.authorization;
+async function auth(request, response, next) {
+   try {
+      const token = request.headers.authorization
 
-      if(!authorization) {
-        throw createError (401, "JWT is required")
-      }
+      if (!token)
+         throw createHttpError(401, "Token is required")
 
-      const payload = jwt.verify (authorization)
-      const user = await koderUseCase.getById(payload.id)
+      const payload = jwt.verify(token)
+      const user = await koderUseCase.show(payload.id)
 
-      req.user = user
+      request.user = user
 
       next()
-
-    } catch (error) {
-        res.status (401)
-        res.json ({
-            succes: false,
-            error: error.message,
-        })
-    }
-    
+   } catch (error) {
+      response.status(error.status || 500)
+      response.json({
+         success: false,
+         error: error.message
+      })
+   }
 }
 
-module.exports = auth;
+module.exports = auth

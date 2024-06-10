@@ -1,104 +1,105 @@
-const express = require ("express")
-const kodersUseCase = require ("../usecases/koders.usecase");
-const auth = require("../middleware/auth.middleware")
-const router = express.Router()
+const express = require('express')
+const koderCase = require('../usecases/koders.usecase')
+const auth = require('../middleware/auth.middleware')
 
-//GET /koders
- router.get("/", auth, async (req,res) => {
-    try {
-    const koders = await kodersUseCase.getAll() 
-    res.json({
-        succes: true,
-        data: { koders }, 
-    })
-    } catch (error) {
-        res.status(error.status || 500);
-        res.json ({
-            succces: false,
-            error:error.message,
-        })
-    }
+const router = express.Router();
+
+// Index
+router.get("/", auth, async (request, response) => {
+   try {
+      const koders = await koderCase.index()
+      response.json({
+         sucess: true,
+         data: {
+            koders
+         }
+      })
+   } catch (error) {
+      response.status(error.status || 500);
+      response.json({
+         success: false,
+         error: error.message,
+      })
+   }
 })
 
-//POST /koders
-
-router.post ("/", async (req, res) => {
-    try {
-        const koderCreated = await kodersUseCase.create(req.body);
-
-        res.json ({
-            succes: true,
-            data: {
-                koder: koderCreated,
-            }
-        })
-
-    } catch (error) {
-        res.status (error.status || 500);
-        res.json ({
-            succces: false,
-            error:error.message,
-        })
-    }
-
+// store
+router.post('/', async (request, response) => {
+   try {
+      const koder = await koderCase.store(request.body)
+      response.json({
+         success: true,
+         data: {
+            koder
+         }
+      })
+   } catch (error) {
+      response.status(error.status || 500);
+      response.json({
+         success: false,
+         error: error.message,
+      })
+   }
 })
 
-// GET /koders/id:
-router.get ("/:id", auth, async (req, res) => {
-    try {
-        const id = req.params.id
-        const koder = await kodersUseCase.getById(id);
-
-        res.json({
-            succes: true,
-            data: { koder },
-        })
-
-    }catch (error) {
-        res.status (error.status || 500);
-        res.json ({
-            succces: false,
-            error:error.message,
-        })
-    }
+// show
+router.get('/:id', auth, async (request, response) => {
+   try {
+      const { id } = request.params
+      const koder = await koderCase.getById(id)
+      response.json({
+         success: true,
+         data: {
+            koder
+         }
+      })
+   } catch (error) {
+      response.status(error.status || 500);
+      response.json({
+         success: false,
+         error: error.message,
+      })
+   }
 })
 
-// delete
-
-router.delete("/:id",auth,  async (req, res) => {
-    try {
-        const { id } = req.params;
-        const koderDeleted = await kodersUseCase.deleteById(id);
-        res.json({
-            succes: true,
-            data: { koder: koderDeleted },
-        })
-    } catch (error) {
-        res.status (error.status || 500);
-        res.json ({
-            succces: false,
-            error:error.message,
-        })
-    }
+// update
+router.patch('/:id', auth, async (request, response) => {
+   try {
+      const { id } = request.params
+      const koder = await koderCase.updateById(id, request.body)
+      response.json({
+         sucess: true,
+         data: {
+            koder
+         }
+      })
+   } catch (error) {
+      response.status(error.status || 500);
+      response.json({
+         success: false,
+         error: error.message,
+      })
+   }
 })
 
-//patch /koders/:id
+// destroy
+router.delete("/:id", auth, async (request, response) => {
+   try {
+      const { id } = request.params
+      await koderCase.destroy(id)
+      response.json({
+         sucess: true,
+         data: {
 
-router.patch ("/:id", auth, async (req,res) => {
-    try {
-        const { id } = req.params;
-        const koderUpdate = await kodersUseCase.updateById(id, req.body);
-        res.json({
-            succes: true,
-            data: { koder: koderUpdate },
-        })
-
-    } catch (error) {
-        res.status (error.status || 500);
-        res.json ({
-            succces: false,
-            error:error.message,
-        })
-    }
+         }
+      })
+   } catch (error) {
+      response.status(error.status || 500);
+      response.json({
+         success: false,
+         error: error.message,
+      })
+   }
 })
+
 module.exports = router;
